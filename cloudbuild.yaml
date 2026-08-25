@@ -5,15 +5,19 @@ steps:
       - '-c'
       - |
         set -e
-        SDK_DIR=/opt/android-sdk
-        mkdir -p $$SDK_DIR/licenses/
 
-        # Cria os arquivos de aceite de licença diretamente
-        printf "\n89339d0fe645e40da8915b45704711293d476c54\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a637bfa5ea6d57279b24f09152f721200" > $$SDK_DIR/licenses/android-sdk-license
-        printf "\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c057d93f4469d5b685195d8d83a64b22" > $$SDK_DIR/licenses/android-sdk-preview-license
+        # Aceita todas as licenças usando os executáveis nativos do PATH
+        yes | sdkmanager --licenses || true
 
-        # Força o aceite de todas as licenças restantes de forma totalmente automática
-        yes | $$SDK_DIR/cmdline-tools/latest/bin/sdkmanager --licenses || yes | $$SDK_DIR/tools/bin/sdkmanager --licenses || true
+        # Se o gradlew existir usa ele, senão usa o gradle instalado no container
+        if [ -f "./gradlew" ]; then
+          chmod +x ./gradlew
+          ./gradlew assembleRelease --no-daemon
+        else
+          gradle assembleRelease --no-daemon
+        fi
 
-        # Executa o build via Gradle
-        ./gradlew assembleRelease --no-daemon
+artifacts:
+  objects:
+    location: 'gs://arched-science-453116-h5_cloudbuild/apk/'
+    paths: ['app/build/outputs/apk/release/*.apk']
