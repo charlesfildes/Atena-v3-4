@@ -4,10 +4,18 @@ steps:
     args:
       - '-c'
       - |
-        echo y | sdkmanager --licenses || true
-        gradle assembleRelease
+        set -e
+        # Local do SDK no container thyrlian
+        ANDROID_HOME=/opt/android-sdk
+        mkdir -p ${ANDROID_HOME}/licenses/
 
-artifacts:
-  objects:
-    location: 'gs://arched-science-453116-h5_cloudbuild/apk/'
-    paths: ['app/build/outputs/apk/release/*.apk']
+        # Aceita todas as licenças conhecidas gravando os hashes diretamente
+        printf "\n89339d0fe645e40da8915b45704711293d476c54\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a637bfa5ea6d57279b24f09152f721200" > ${ANDROID_HOME}/licenses/android-sdk-license
+        printf "\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c057d93f4469d5b685195d8d83a64b22" > ${ANDROID_HOME}/licenses/android-sdk-preview-license
+        printf "\n7a93 lowe613f... (aceite automatizado)" > /dev/null 2>&1 || true
+
+        # Força aceite das licenças restantes incluindo XR e MIPS
+        yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --licenses || yes | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses || true
+
+        # Compila o APK de Release
+        ./gradlew assembleRelease --no-daemon
