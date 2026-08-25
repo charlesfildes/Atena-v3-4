@@ -1,8 +1,7 @@
 steps:
-  - name: 'gcr.io/cloud-builders/gradle'
+  - name: 'gradle:8.5.0-jdk17'
+    entrypoint: 'gradle'
     args: ['assembleRelease']
-    env:
-      - 'JAVA_TOOL_OPTIONS=-Xmx2048m'
 
 artifacts:
   objects:
