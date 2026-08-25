@@ -1,0 +1,8 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gradle'
+    args: ['assembleRelease']
+
+artifacts:
+  objects:
+    location: 'gs://projeto-orion-builds/apk/'
+    paths: ['app/build/outputs/apk/release/*.apk']
