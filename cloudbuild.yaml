@@ -1,7 +1,11 @@
 steps:
-  - name: 'gradle:8.5.0-jdk17'
-    entrypoint: 'gradle'
-    args: ['assembleRelease']
+  - name: 'thyrlian/android-sdk:latest'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        yes | sdkmanager --licenses
+        gradle assembleRelease
 
 artifacts:
   objects:
