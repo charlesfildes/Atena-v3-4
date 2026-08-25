@@ -4,7 +4,7 @@ steps:
     args:
       - '-c'
       - |
-        yes | sdkmanager --licenses
+        echo y | sdkmanager --licenses || true
         gradle assembleRelease
 
 artifacts:
