@@ -1,8 +1,10 @@
 steps:
   - name: 'gcr.io/cloud-builders/gradle'
     args: ['assembleRelease']
+    env:
+      - 'JAVA_TOOL_OPTIONS=-Xmx2048m'
 
 artifacts:
   objects:
-    location: 'gs://projeto-orion-builds/apk/'
+    location: 'gs://arched-science-453116-h5_cloudbuild/apk/'
     paths: ['app/build/outputs/apk/release/*.apk']
