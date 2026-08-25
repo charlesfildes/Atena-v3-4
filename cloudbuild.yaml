@@ -5,16 +5,13 @@ steps:
       - '-c'
       - |
         set -e
-
-        # Aceita todas as licenças usando os executáveis nativos do PATH
         yes | sdkmanager --licenses || true
 
-        # Se o gradlew existir usa ele, senão usa o gradle instalado no container
         if [ -f "./gradlew" ]; then
           chmod +x ./gradlew
-          ./gradlew assembleRelease --no-daemon
+          ./gradlew assembleRelease --stacktrace --info --no-daemon
         else
-          gradle assembleRelease --no-daemon
+          gradle assembleRelease --stacktrace --info --no-daemon
         fi
 
 artifacts:
