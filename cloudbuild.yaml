@@ -4,12 +4,11 @@ steps:
   args:
     - '-c'
     - |
-      mkdir -p /tmp/src /tmp/.gradle output
+      mkdir -p /tmp/src /tmp/.gradle /workspace/output
       cp -r . /tmp/src
       cd /tmp/src
       chmod +x gradlew
-      ./gradlew assembleDebug --no-daemon -g /tmp/.gradle --stacktrace
-      cp app/build/outputs/apk/debug/*.apk /workspace/output/
+      ./gradlew assembleDebug --no-daemon -g /tmp/.gradle --full-stacktrace && cp app/build/outputs/apk/debug/*.apk /workspace/output/
 
 artifacts:
   objects:
