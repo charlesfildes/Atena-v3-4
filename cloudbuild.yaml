@@ -10,3 +10,9 @@ steps:
       mkdir -p /tmp/.gradle
       chmod +x gradlew
       ./gradlew assembleDebug --stacktrace
+
+artifacts:
+  objects:
+    location: 'gs://arched-science-453116-h5_cloudbuild/apks/'
+    paths:
+      - 'app/build/outputs/apk/debug/*.apk'
