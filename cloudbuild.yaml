@@ -4,17 +4,5 @@ steps:
     args:
       - '-c'
       - |
-        set -e
-        yes | sdkmanager --licenses || true
-
-        if [ -f "./gradlew" ]; then
-          chmod +x ./gradlew
-          ./gradlew assembleRelease --stacktrace --info --no-daemon
-        else
-          gradle assembleRelease --stacktrace --info --no-daemon
-        fi
-
-artifacts:
-  objects:
-    location: 'gs://arched-science-453116-h5_cloudbuild/apk/'
-    paths: ['app/build/outputs/apk/release/*.apk']
+        chmod +x gradlew
+        ./gradlew assembleRelease --stacktrace
