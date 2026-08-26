@@ -1,9 +1,13 @@
 steps:
-  - name: 'thyrlian/android-sdk:latest'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gradle wrapper --gradle-version 8.10.2
-        chmod +x gradlew
-        ./gradlew clean assembleRelease --stacktrace
+- name: 'thyrlian/android-sdk:latest'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      # Aceita licencas e instala SDK Platform 35 e Build-Tools 35.0.0
+      yes | sdkmanager --licenses || true
+      sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      
+      # Garante permissao de execucao no wrapper e compila
+      chmod +x gradlew
+      ./gradlew assembleDebug --stacktrace
