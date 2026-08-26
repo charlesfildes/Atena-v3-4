@@ -4,14 +4,15 @@ steps:
   args:
     - '-c'
     - |
-      mkdir -p /tmp/src /tmp/.gradle
+      mkdir -p /tmp/src /tmp/.gradle output
       cp -r . /tmp/src
       cd /tmp/src
       chmod +x gradlew
       ./gradlew assembleDebug --no-daemon -g /tmp/.gradle --stacktrace
+      cp app/build/outputs/apk/debug/*.apk /workspace/output/
 
 artifacts:
   objects:
     location: 'gs://arched-science-453116-h5_cloudbuild/apks/'
     paths:
-      - '/tmp/src/app/build/outputs/apk/debug/*.apk'
+      - 'output/*.apk'
