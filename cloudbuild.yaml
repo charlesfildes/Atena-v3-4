@@ -1,11 +1,15 @@
 steps:
 - name: 'mobiledevops/android-sdk-image:34.0.0'
   entrypoint: 'bash'
+  env:
+    - 'GRADLE_USER_HOME=/tmp/.gradle'
   args:
     - '-c'
     - |
+      rm -rf .gradle /workspace/.gradle /tmp/.gradle
+      mkdir -p /tmp/.gradle
       chmod +x gradlew
-      ./gradlew assembleDebug -g /tmp/.gradle --no-daemon --stacktrace
+      ./gradlew assembleDebug --no-daemon --stacktrace
 
 artifacts:
   objects:
