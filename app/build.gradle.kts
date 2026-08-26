@@ -70,3 +70,7 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
+
+tasks.matching { it.name.contains("kapt", ignoreCase = true) }.configureEach {
+    enabled = false
+}
