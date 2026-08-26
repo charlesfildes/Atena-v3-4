@@ -8,12 +8,10 @@ steps:
       cp -r . /tmp/src
       cd /tmp/src
       chmod +x gradlew
-      ./gradlew assembleDebug --no-daemon -g /tmp/.gradle
-      mkdir -p /workspace/app/build/outputs/apk/debug
-      cp -r app/build/outputs/apk/debug/* /workspace/app/build/outputs/apk/debug/
+      ./gradlew assembleDebug --no-daemon -g /tmp/.gradle --stacktrace
 
 artifacts:
   objects:
     location: 'gs://arched-science-453116-h5_cloudbuild/apks/'
     paths:
-      - 'app/build/outputs/apk/debug/*.apk'
+      - '/tmp/src/app/build/outputs/apk/debug/*.apk'
