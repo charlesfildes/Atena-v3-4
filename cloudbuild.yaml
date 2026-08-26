@@ -4,7 +4,6 @@ steps:
   args:
     - '-c'
     - |
-      rm -rf /workspace/.gradle
       chmod +x gradlew
       ./gradlew assembleDebug -g /tmp/.gradle --no-daemon --stacktrace
 
