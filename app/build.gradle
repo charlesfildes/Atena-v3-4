@@ -1,17 +1,16 @@
-apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'org.jetbrains.kotlin.plugin.compose'
-apply plugin: 'com.google.devtools.ksp'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
+    id 'com.google.devtools.ksp'
+}
 
 android {
     namespace 'com.orion.atena'
-    compileSdkVersion 34
     compileSdk 34
 
     defaultConfig {
         applicationId "com.orion.atena"
-        minSdkVersion 24
-        targetSdkVersion 34
         minSdk 24
         targetSdk 34
         versionCode 1
