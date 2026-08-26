@@ -4,5 +4,6 @@ steps:
     args:
       - '-c'
       - |
+        gradle wrapper --gradle-version 8.10.2
         chmod +x gradlew
         ./gradlew assembleRelease --stacktrace
