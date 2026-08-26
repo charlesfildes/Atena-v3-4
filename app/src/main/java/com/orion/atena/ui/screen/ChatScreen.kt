@@ -1,8 +1,4 @@
 package com.orion.atena.ui.screen
-import androidx.compose.material3.ExperimentalMaterial3Api
-import kotlin.OptIn
-import androidx.compose.material3.ExperimentalMaterial3Api
-import kotlin.OptIn
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -28,39 +24,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
-
-data class ChatMessage(
-    val id: String = java.util.UUID.randomUUID().toString(),
-    val sender: String,
-    val text: String,
-    val timestamp: Long = System.currentTimeMillis(),
-    val quotedMessage: String? = null
-)
+import kotlin.OptIn
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
-    messages: List<ChatMessage> = emptyList(),
-    onSendMessage: (String, String?) -> Unit = { _, _ -> }
+    messages: List<Pair<String, Boolean>> = emptyList(),
+    onSendMessage: (String) -> Unit = {}
 ) {
-    var inputText by remember { mutableStateOf("") }
-    var quotedText by remember { mutableStateOf<String?>(null) }
+    var textInput by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-    val clipboardManager = LocalClipboardManager.current
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Atena Chat", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+            CenterAlignedTopAppBar(
+                title = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "Atena", style = MaterialTheme.typography.titleLarge)
+                        Text(text = "Projeto Orion", style = MaterialTheme.typography.labelSmall)
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -74,48 +58,12 @@ fun ChatScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(vertical = 8.dp)
+                    .padding(horizontal = 16.dp),
+                reverseLayout = false
             ) {
-                items(messages, key = { it.id }) { message ->
-                    MessageBubble(
-                        message = message,
-                        onCopy = { clipboardManager.setText(AnnotatedString(message.text)) },
-                        onQuote = { quotedText = message.text }
-                    )
-                }
-            }
-
-            AnimatedVisibility(
-                visible = quotedText != null,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                quotedText?.let { quote ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Citando:",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = quote,
-                                maxLines = 1,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                        IconButton(onClick = { quotedText = null }) {
-                            Text("✕", fontWeight = FontWeight.Bold)
-                        }
-                    }
+                // Exibe as mensagens mais recentes
+                items(messages) { message ->
+                    ChatMessageItem(text = message.first, isUser = message.second)
                 }
             }
 
@@ -126,27 +74,18 @@ fun ChatScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
-                    value = inputText,
-                    onValueChange = { inputText = it },
-                    placeholder = { Text("Digite sua mensagem...") },
+                    value = textInput,
+                    onValueChange = { textInput = it },
                     modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(24.dp)
+                    placeholder = { Text("Digite sua mensagem...") }
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                FloatingActionButton(
+                IconButton(
                     onClick = {
-                        if (inputText.isNotBlank()) {
-                            onSendMessage(inputText, quotedText)
-                            inputText = ""
-                            quotedText = null
-                            coroutineScope.launch {
-                                if (messages.isNotEmpty()) {
-                                    listState.animateScrollToItem(messages.size - 1)
-                                }
-                            }
+                        if (textInput.isNotBlank()) {
+                            onSendMessage(textInput)
+                            textInput = ""
                         }
-                    },
-                    shape = CircleShape
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,
@@ -159,75 +98,22 @@ fun ChatScreen(
 }
 
 @Composable
-fun MessageBubble(
-    message: ChatMessage,
-    onCopy: () -> Unit,
-    onQuote: () -> Unit
-) {
-    val isUser = message.sender.lowercase() == "user" || message.sender.lowercase() == "você"
-    val alignment = if (isUser) Alignment.End else Alignment.Start
-    val bgColor = if (isUser) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = alignment
+fun ChatMessageItem(text: String, isUser: Boolean) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        contentAlignment = if (isUser) Alignment.CenterEnd else Alignment.CenterStart
     ) {
         Surface(
             shape = RoundedCornerShape(12.dp),
-            color = bgColor,
-            tonalElevation = 2.dp,
-            modifier = Modifier.widthIn(max = 300.dp)
+            color = if (isUser) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
         ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                message.quotedMessage?.let { quote ->
-                    Surface(
-                        color = Color.Black.copy(alpha = 0.05f),
-                        shape = RoundedCornerShape(4.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 6.dp)
-                    ) {
-                        Text(
-                            text = quote,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(6.dp),
-                            maxLines = 2
-                        )
-                    }
-                }
-
-                SelectionContainer {
-                    Text(
-                        text = message.text,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ContentCopy,
-                        contentDescription = "Copiar",
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clickable { onCopy() },
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.Default.FormatQuote,
-                        contentDescription = "Citar",
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clickable { onQuote() },
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+            SelectionContainer {
+                Text(
+                    text = text,
+                    modifier = Modifier.padding(12.dp)
+                )
             }
         }
     }
