@@ -6,6 +6,7 @@ steps:
   args:
     - '-c'
     - |
+      rm -rf /workspace/.gradle
       mkdir -p /tmp/.gradle
       chmod +x gradlew
       ./gradlew assembleDebug --stacktrace
