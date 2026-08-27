@@ -8,7 +8,21 @@ steps:
       cp -r . /tmp/src
       cd /tmp/src
       chmod +x gradlew
-      ./gradlew assembleDebug --no-daemon -g /tmp/.gradle --full-stacktrace && cp app/build/outputs/apk/debug/*.apk /workspace/output/
+      
+      # Executa o Gradle e guarda o log completo em arquivo
+      ./gradlew assembleDebug --no-daemon -g /tmp/.gradle > /tmp/gradle_output.log 2>&1
+      BUILD_STATUS=$?
+      
+      if [ $BUILD_STATUS -ne 0 ]; then
+        echo "=========================================="
+        echo "       ERRO REAL DA COMPILAÇÃO            "
+        echo "=========================================="
+        grep -B 2 -A 20 "* What went wrong:" /tmp/gradle_output.log || tail -n 50 /tmp/gradle_output.log
+        echo "=========================================="
+        exit $BUILD_STATUS
+      fi
+
+      cp app/build/outputs/apk/debug/*.apk /workspace/output/
 
 artifacts:
   objects:
