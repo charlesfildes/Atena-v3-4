@@ -9,10 +9,20 @@ steps:
       cd /tmp/src
       chmod +x gradlew
       
-      # Executa o build sem declarar variáveis com $
-      ./gradlew assembleDebug --no-daemon -g /tmp/.gradle --stacktrace
+      # Executa a compilação e exibe apenas os erros Kotlin
+      ./gradlew assembleDebug --no-daemon -g /tmp/.gradle > /tmp/build.log 2>&1
+      BUILD_STATUS=$?
       
-      cp app/build/outputs/apk/debug/*.apk /workspace/output/
+      if [ $BUILD_STATUS -eq 0 ]; then
+        cp app/build/outputs/apk/debug/*.apk /workspace/output/
+      else
+        echo "=========================================="
+        echo "          ERRO DE CÓDIGO KOTLIN           "
+        echo "=========================================="
+        grep -E "e: /|error:" /tmp/build.log || tail -n 40 /tmp/build.log
+        echo "=========================================="
+        exit 1
+      fi
 
 artifacts:
   objects:
