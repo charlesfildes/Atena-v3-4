@@ -4,7 +4,7 @@ steps:
   args:
     - '-c'
     - |
-      mkdir -p /tmp/src /tmp/.gradle /workspace/output
+      mkdir -p /tmp/src /tmp/.gradle /tmp/output
       cp -r . /tmp/src
       cd /tmp/src
       chmod +x gradlew
@@ -13,7 +13,8 @@ steps:
       BUILD_STATUS=$$?
       
       if [ $$BUILD_STATUS -eq 0 ]; then
-        cp app/build/outputs/apk/debug/*.apk /workspace/output/
+        cp app/build/outputs/apk/debug/*.apk /tmp/output/
+        cp -r /tmp/output /workspace/
       else
         echo "=========================================="
         echo "          ERRO DE CÓDIGO KOTLIN           "
@@ -27,4 +28,4 @@ artifacts:
   objects:
     location: 'gs://arched-science-453116-h5_cloudbuild/apks/'
     paths:
-      - 'output/*.apk'
+      - '/tmp/output/*.apk'
