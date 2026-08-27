@@ -9,11 +9,10 @@ steps:
       cd /tmp/src
       chmod +x gradlew
       
-      # Executa a compilação e exibe apenas os erros Kotlin
       ./gradlew assembleDebug --no-daemon -g /tmp/.gradle > /tmp/build.log 2>&1
-      BUILD_STATUS=$?
+      BUILD_STATUS=$$?
       
-      if [ $BUILD_STATUS -eq 0 ]; then
+      if [ $$BUILD_STATUS -eq 0 ]; then
         cp app/build/outputs/apk/debug/*.apk /workspace/output/
       else
         echo "=========================================="
