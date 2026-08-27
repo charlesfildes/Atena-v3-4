@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.orion.atena' // confirme se o namespace do seu projeto é este
+    namespace 'com.orion.atena'
     compileSdk 34
 
     defaultConfig {
@@ -42,4 +42,7 @@ dependencies {
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
+    
+    // Ícones estendidos do Compose (resolve ContentCopy, FormatQuote, etc.)
+    implementation 'androidx.compose.material:material-icons-extended:1.5.4'
 }
