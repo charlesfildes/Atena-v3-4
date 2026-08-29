@@ -10,8 +10,11 @@ data class ChatMessage(
     val content: String,
     val timestamp: Long = System.currentTimeMillis(),
     val quotedFrom: String? = null,
-    val quotedContent: String? = null,
-)
+    val quotedContent: String? = null
+) {
+    val sender: String get() = role
+    val text: String get() = content
+}
 
 @Entity(tableName = "chats")
 data class ChatSession(
