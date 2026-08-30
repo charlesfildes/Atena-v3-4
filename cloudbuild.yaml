@@ -4,14 +4,16 @@ steps:
     args:
       - '-c'
       - |
-        # Garante a instalação e força a variável apontando direto para o JDK 17
+        # Instala o Java 17
         apt-get update -qq && apt-get install -y -qq openjdk-17-jdk-headless
 
-        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+        # Detecta dinamicamente onde o arquivo java do JDK 17 foi instalado no /usr/lib/jvm
+        REAL_JDK17=$(dirname $(dirname $(dpkg -L openjdk-17-jdk-headless | grep "/bin/java$$")))
+        export JAVA_HOME=$$REAL_JDK17
         export PATH=$$JAVA_HOME/bin:$$PATH
 
         echo "--- Versão do Java configurada ---"
-        $$JAVA_HOME/bin/java -version
+        java -version
         echo "JAVA_HOME ativo: $$JAVA_HOME"
 
         mkdir -p /tmp/src /tmp/.gradle /tmp/output
