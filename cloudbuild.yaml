@@ -29,3 +29,10 @@ artifacts:
     location: 'gs://arched-science-453116-h5_cloudbuild/apks/'
     paths:
       - '/tmp/output/*.apk'
+      steps:
+  - name: 'gcr.io/cloud-builders/gradle'
+    args: ['assembleDebug']
+
+# Adicione estas linhas ao final:
+options:
+  logging: CLOUD_LOGGING_ONLY
