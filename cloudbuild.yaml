@@ -4,16 +4,14 @@ steps:
     args:
       - '-c'
       - |
-        # Instala o JDK 17 e força a alternância do sistema
-        apt-get update -qq && apt-get install -y -qq openjdk-17-jdk
-        update-java-alternatives --set $(update-java-alternatives -l | grep 17 | awk '{print $1}') || true
+        # Garante a instalação e força a variável apontando direto para o JDK 17
+        apt-get update -qq && apt-get install -y -qq openjdk-17-jdk-headless
 
-        # Define JAVA_HOME apontando para o binário do Java 17 recém-configurado
-        export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
+        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
         export PATH=$$JAVA_HOME/bin:$$PATH
 
         echo "--- Versão do Java configurada ---"
-        java -version
+        $$JAVA_HOME/bin/java -version
         echo "JAVA_HOME ativo: $$JAVA_HOME"
 
         mkdir -p /tmp/src /tmp/.gradle /tmp/output
