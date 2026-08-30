@@ -1,16 +1,14 @@
 steps:
-  - name: 'ubuntu:latest'
+  - name: 'mobiledevops/android-sdk-image:34.0.0'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        # Prepara diretórios de trabalho e cópia limpa
         mkdir -p /tmp/src /tmp/.gradle /tmp/output
         cp -r . /tmp/src
         cd /tmp/src
         chmod +x gradlew
 
-        # Executa a compilação do APK utilizando a configuração do Wrapper
         ./gradlew assembleDebug --no-daemon -g /tmp/.gradle > /tmp/build.log 2>&1
         BUILD_STATUS=$$?
 
