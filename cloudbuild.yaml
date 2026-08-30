@@ -4,11 +4,13 @@ steps:
     args:
       - '-c'
       - |
-        # Seleciona explicitamente o JDK 17 do sistema
-        export JAVA_HOME=$(find /usr/lib/jvm -maxdepth 1 -name "*17*" | head -n 1)
+        # Instala e garante o OpenJDK 17
+        apt-get update -qq && apt-get install -y -qq openjdk-17-jdk-headless
+        
+        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
         export PATH=$$JAVA_HOME/bin:$$PATH
 
-        echo "Usando Java em: $$JAVA_HOME"
+        echo "--- Versão do Java configurada ---"
         java -version
 
         mkdir -p /tmp/src /tmp/.gradle /tmp/output
