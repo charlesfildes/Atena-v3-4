@@ -4,10 +4,12 @@ steps:
     args:
       - '-c'
       - |
-        # Localiza o caminho real do Java 17 e exporta o JAVA_HOME usando $$
-        JAVA_17_PATH=$$(dirname $$(dirname $$(readlink -f $$(which java))))
-        export JAVA_HOME=$$JAVA_17_PATH
+        # Seleciona explicitamente o JDK 17 do sistema
+        export JAVA_HOME=$(find /usr/lib/jvm -maxdepth 1 -name "*17*" | head -n 1)
         export PATH=$$JAVA_HOME/bin:$$PATH
+
+        echo "Usando Java em: $$JAVA_HOME"
+        java -version
 
         mkdir -p /tmp/src /tmp/.gradle /tmp/output
         cp -r . /tmp/src
