@@ -17,9 +17,9 @@ steps:
           cp -r /tmp/output /workspace/
         else
           echo "=========================================="
-          echo "       ERRO DE COMPILAÇÃO DO KOTLIN       "
+          echo "      DETALHES DO ERRO DE COMPILAÇÃO      "
           echo "=========================================="
-          grep -B 40 -A 5 "BUILD FAILED" /tmp/build.log || tail -n 60 /tmp/build.log
+          cat /tmp/build.log
           echo "=========================================="
           exit 1
         fi
