@@ -17,9 +17,9 @@ steps:
           cp -r /tmp/output /workspace/
         else
           echo "=========================================="
-          echo "      DETALHES DO ERRO DE COMPILAÇÃO      "
+          echo "      ULTIMAS LINHAS DO ERRO (TAIL)       "
           echo "=========================================="
-          cat /tmp/build.log
+          tail -n 120 /tmp/build.log
           echo "=========================================="
           exit 1
         fi
