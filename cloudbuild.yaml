@@ -1,10 +1,18 @@
 steps:
-  - name: 'ghcr.io/cirrusci/android-sdk:34'
+  - name: 'mobiledevops/android-sdk-image:34.0.0'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        echo "--- Versão do Java Nativa da Imagem ---"
+        # Configura o sistema para usar o OpenJDK 17 pré-instalado na imagem
+        update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java || true
+        update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac || true
+
+        # Define as variáveis de ambiente ativas
+        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+        export PATH=$$JAVA_HOME/bin:$$PATH
+
+        echo "--- Versão do Java configurada ---"
         java -version
         echo "JAVA_HOME: $$JAVA_HOME"
 
