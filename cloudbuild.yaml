@@ -1,6 +1,8 @@
 steps:
   - name: 'mobiledevops/android-sdk-image:34.0.0'
     entrypoint: 'bash'
+    env:
+      - 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64'
     args:
       - '-c'
       - |
