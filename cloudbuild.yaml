@@ -1,26 +1,16 @@
 steps:
-  - name: 'mobiledevops/android-sdk-image:34.0.0'
+  - name: 'ubuntu:latest'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        # Configura o sistema para usar o OpenJDK 17 pré-instalado na imagem
-        update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java || true
-        update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac || true
-
-        # Define as variáveis de ambiente ativas
-        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-        export PATH=$$JAVA_HOME/bin:$$PATH
-
-        echo "--- Versão do Java configurada ---"
-        java -version
-        echo "JAVA_HOME: $$JAVA_HOME"
-
+        # Prepara diretórios de trabalho e cópia limpa
         mkdir -p /tmp/src /tmp/.gradle /tmp/output
         cp -r . /tmp/src
         cd /tmp/src
         chmod +x gradlew
 
+        # Executa a compilação do APK utilizando a configuração do Wrapper
         ./gradlew assembleDebug --no-daemon -g /tmp/.gradle > /tmp/build.log 2>&1
         BUILD_STATUS=$$?
 
@@ -38,7 +28,7 @@ steps:
 
 artifacts:
   objects:
-    location: 'gs://arched-science-453116-h5_cloudbuild/apks/'
+    location: 'gs://arched-science-453116-h5-atena-apks/'
     paths:
       - '/tmp/output/*.apk'
 
